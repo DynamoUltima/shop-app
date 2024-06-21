@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FlatList, Image, ListRenderItem, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Product, fetchProducts } from "../api/api";
 import { ProductPageProps } from "../navigation/ProductStack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const Products = ({ navigation }: ProductPageProps) => {
@@ -21,15 +22,16 @@ const Products = ({ navigation }: ProductPageProps) => {
         <TouchableOpacity style={styles.productItem} onPress={() => navigation.navigate('ProductDetails', { id: item.id })} >
             <Image style={styles.productImage} source={{uri: item.product_image}} />
 
-            <Text>{item.product_name}</Text>
+            <Text style={styles.productName}>{item.product_name}</Text>
+            <Text>{item.product_price}</Text>
         </TouchableOpacity>
 
     )
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView  style={styles.container}>
             <FlatList data={products} renderItem={renderProductItem} keyExtractor={(item)=>item.id.toString()} numColumns={2}></FlatList>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -39,7 +41,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor:'#f2f2f2'
     },
-    productName:{},
+    productName:{
+        fontWeight:'bold',
+        fontSize:14,
+        marginTop:8
+    },
+    productPrice:{},
     productImage:{
         width:100,
         height:100,

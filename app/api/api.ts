@@ -26,16 +26,37 @@ export interface Order {
 export const fetchProducts = async () => {
 
     try {
-        const response = await fetch(`${API_URL}/products`);
+        const response = await fetch(`http://192.168.80.82:3000/products`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch products");
         }
-        //  console.log(response)
+        console.log(response)
         return await response.json()
+        
     } catch (error) {
         console.log(error)
         return []
     }
 
 }
+
+export async function fetchProductDetails(productId: number): Promise<Product | null> {
+
+    try {
+        const response = await fetch(`http://192.168.80.82:3000/products/${productId}`)
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch Product");
+        }
+
+        return await response.json()
+
+    } catch (error) {
+        console.log(error);
+        return null;
+
+    }
+
+}
+
