@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ProductDetailsPageProps } from "../navigation/ProductStack";
 import { Product, fetchProductDetails } from "../api/api";
 import useCartStore, { CartState } from "../state/cartStore";
@@ -52,37 +52,42 @@ const ProductDetails = ({ route }: ProductDetailsPageProps) => {
 
     }
     return (
-
-        <View style={styles.container}>
-            <Image style={styles.productImage} source={{ uri: product?.product_image }} />
-            <Text style={styles.productName}>
-                {product?.product_name}
-            </Text>
-            <Text style={styles.productDescription}>
-                {product?.product_description}
-            </Text>
-            <Text style={styles.productCategory}>
-                {product?.product_category}
-            </Text>
-            {/* <Text style={styles.productDescription}>
+        <>
+            {products ? (<View style={styles.container}>
+                <Image style={styles.productImage} source={{ uri: product?.product_image }} />
+                <Text style={styles.productName}>
+                    {product?.product_name}
+                </Text>
+                <Text style={styles.productDescription}>
+                    {product?.product_description}
+                </Text>
+                <Text style={styles.productCategory}>
+                    {product?.product_category}
+                </Text>
+                {/* <Text style={styles.productDescription}>
                 {product?.product_stock}
             </Text> */}
-            <Text style={styles.productPrice}>
-                Price : {product?.product_price}
-            </Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={()=>reduceProducts(product!)} >
-                    <Ionicons name="remove" size={24} color={'#1FE687'} />
-                </TouchableOpacity>
-                <Text style={styles.buttonText}>{count}</Text>
-                <TouchableOpacity style={styles.button} >
-                    <Ionicons name="add" size={24} color={'#1FE687'} onPress={()=>addProducts(product!)} />
-                </TouchableOpacity>
+                <Text style={styles.productPrice}>
+                    Price : {product?.product_price}
+                </Text>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => reduceProducts(product!)} >
+                        <Ionicons name="remove" size={24} color={'#1FE687'} />
+                    </TouchableOpacity>
+                    <Text style={styles.buttonText}>{count}</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => addProducts(product!)} >
+                        <Ionicons name="add" size={24} color={'#1FE687'} />
+                    </TouchableOpacity>
 
-            </View>
+                </View>
 
 
-        </View>
+            </View>) :
+                <View style={styles.container}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>}
+
+        </>
 
 
     );
@@ -128,9 +133,9 @@ const styles = StyleSheet.create({
     buttonText: {
         flex: 1,
         textAlign: 'center',
-        alignSelf:'center',
-        fontWeight:'bold',
-        fontSize:22
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        fontSize: 22
     },
 
     button: {
@@ -139,7 +144,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         flex: 1,
-        padding:10
+        padding: 10
 
     }
 

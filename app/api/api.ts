@@ -11,7 +11,7 @@ export interface Product {
 }
 
 interface CreateOrder {
-    email: string;
+    customer_email: string;
     products: Array<{ product_id: number; quantity: number }>;
 }
 
@@ -26,7 +26,7 @@ export interface Order {
 export const fetchProducts = async () => {
 
     try {
-        const response = await fetch(`http://192.168.80.82:3000/products`);
+        const response = await fetch(`http://192.168.0.168:3000/products`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch products");
@@ -44,7 +44,7 @@ export const fetchProducts = async () => {
 export async function fetchProductDetails(productId: number): Promise<Product | null> {
 
     try {
-        const response = await fetch(`http://192.168.80.82:3000/products/${productId}`)
+        const response = await fetch(`http://192.168.0.168:3000/products/${productId}`)
 
         if (!response.ok) {
             throw new Error("Failed to fetch Product");
@@ -59,4 +59,25 @@ export async function fetchProductDetails(productId: number): Promise<Product | 
     }
 
 }
+
+
+export async function createOrder(orderData: CreateOrder): Promise<Order | null> {
+    try {
+      const response = await fetch(`http://192.168.0.168:3000/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch order details.');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      return null;
+    }
+  }
 
