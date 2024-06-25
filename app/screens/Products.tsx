@@ -29,9 +29,9 @@ const Products = ({ navigation }: ProductPageProps) => {
     )
 
     return (
-        <SafeAreaView  style={styles.container}>
+        <View  style={styles.container}>
             <FlatList data={products} renderItem={renderProductItem} keyExtractor={(item)=>item.id.toString()} numColumns={2}></FlatList>
-        </SafeAreaView>
+        </View>
     );
 }
 

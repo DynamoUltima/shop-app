@@ -53,7 +53,7 @@ const ProductDetails = ({ route }: ProductDetailsPageProps) => {
     }
     return (
         <>
-            {products ? (<View style={styles.container}>
+            {product ? (<View style={styles.container}>
                 <Image style={styles.productImage} source={{ uri: product?.product_image }} />
                 <Text style={styles.productName}>
                     {product?.product_name}
@@ -83,7 +83,7 @@ const ProductDetails = ({ route }: ProductDetailsPageProps) => {
 
 
             </View>) :
-                <View style={styles.container}>
+                <View style={styles.loading}>
                     <ActivityIndicator size="large" color="#00ff00" />
                 </View>}
 
@@ -99,6 +99,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
 
         gap: 10
+    },
+    loading:{
+        flex:1,
+        justifyContent:'center'
     },
     productImage: {
         height: 300,

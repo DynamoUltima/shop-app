@@ -26,7 +26,7 @@ export interface Order {
 export const fetchProducts = async () => {
 
     try {
-        const response = await fetch(`http://192.168.0.168:3000/products`);
+        const response = await fetch(`${API_URL}/products`);
 
         if (!response.ok) {
             throw new Error("Failed to fetch products");
@@ -44,7 +44,7 @@ export const fetchProducts = async () => {
 export async function fetchProductDetails(productId: number): Promise<Product | null> {
 
     try {
-        const response = await fetch(`http://192.168.0.168:3000/products/${productId}`)
+        const response = await fetch(`${API_URL}/products/${productId}`)
 
         if (!response.ok) {
             throw new Error("Failed to fetch Product");
@@ -63,7 +63,7 @@ export async function fetchProductDetails(productId: number): Promise<Product | 
 
 export async function createOrder(orderData: CreateOrder): Promise<Order | null> {
     try {
-      const response = await fetch(`http://192.168.0.168:3000/orders`, {
+      const response = await fetch(`${API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
