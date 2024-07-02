@@ -7,8 +7,8 @@ import CartModal from "../screens/CartModal"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { Ionicons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
-import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { useBottomSheetModal } from "@gorhom/bottom-sheet"
+
 
 
 type ProductStackParamList = {
@@ -23,9 +23,12 @@ export type ProductPageProps = NativeStackScreenProps<ProductStackParamList, 'Pr
 export type ProductDetailsPageProps = NativeStackScreenProps<ProductStackParamList, 'ProductDetails'>;
 export type Stacknavigation = NavigationProp<ProductStackParamList>;
 
+type ProductPageArgs = {
+    onPress: () => void;
+    visibility: boolean;
+}
 
-
-const ProductsStackNav = () => {
+const ProductsStackNav = ({ onPress, visibility }: ProductPageArgs) => {
 
 
     return (
@@ -33,11 +36,11 @@ const ProductsStackNav = () => {
             headerStyle: { backgroundColor: "#1FE687" },
             headerTintColor: "#141414",
             headerTitleAlign: "center",
-            headerRight: () => <CartButton />
+            headerRight: () => <CartButton visibility={visibility} onPress={onPress} />
         }} >
 
-            <ProductsStack.Screen name="Products" component={Products} options={{ headerTitle: 'Neon Shop' }} />
-            <ProductsStack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: 'Neon Shop' }} />
+            <ProductsStack.Screen name="Products" component={Products} options={{ headerTitle: ' Shop' }} />
+            <ProductsStack.Screen name="ProductDetails" component={ProductDetails} options={{ headerTitle: 'Shop' }} />
             <ProductsStack.Screen
                 name="CartModal"
                 component={CartModal}
@@ -50,10 +53,11 @@ const ProductsStackNav = () => {
     )
 }
 
-const CartButton = () => {
+const CartButton = ({ onPress, visibility }: ProductPageArgs) => {
 
     const navigation = useNavigation<Stacknavigation>()
     const [count, setCount] = useState(0)
+    const { dismiss } = useBottomSheetModal()
 
     const { products } = useCartStore((state) => ({
         products: state.products
@@ -66,50 +70,19 @@ const CartButton = () => {
     }, [products])
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('CartModal')}>
+
+        <TouchableOpacity onPress={() => visibility? dismiss():  onPress()}>
             <View style={styles.countContainer}>
                 <Text >{count}</Text>
             </View>
             <Ionicons name="cart" size={28} />
         </TouchableOpacity >
+
     )
 
 }
 
-// export  const CustomModal =({handleSheetChanges}:any)=>{
-//     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-//     const snapPoints = useMemo(() => ['25%', '50%'], []);
 
-//     return (
-//         <GestureHandlerRootView style={{ flex: 1 }}>
-
-
-
-//             <BottomSheetModalProvider>
-//                 <View style={styles.container}>
-//                     {/* <Button
-//                         onPress={handlePresentModalPress}
-//                         title="Present Modal"
-//                         color="black"
-//                     /> */}
-//                     <BottomSheetModal
-//                         ref={bottomSheetModalRef}
-//                         index={0}
-//                         snapPoints={snapPoints}
-//                         onChange={handleSheetChanges}
-//                     >
-//                         <BottomSheetView style={styles.contentContainer}>
-//                             <Text>Awesome 🎉</Text>
-//                         </BottomSheetView>
-//                     </BottomSheetModal>
-//                 </View >
-//             </BottomSheetModalProvider >
-
-
-
-//          </GestureHandlerRootView>
-//     )
-// }
 
 const styles = StyleSheet.create({
     countContainer: {

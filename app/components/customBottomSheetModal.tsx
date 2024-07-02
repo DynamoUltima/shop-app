@@ -1,14 +1,17 @@
-import { Button, FlatList, Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from '@expo/vector-icons';
-import useCartStore from "../state/cartStore";
-import { useState } from "react";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import { Stacknavigation } from "../navigation/ProductStack";
+import React, {  useMemo, useState } from "react";
+import { FlatList, Image, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Order, createOrder } from "../api/api";
+import { Stacknavigation } from "../navigation/ProductStack";
+import useCartStore from "../state/cartStore";
+import { Ionicons } from '@expo/vector-icons';
 
-const CartModal = () => {
+type ModalProps = {
+    bottomSheetModalRef: React.Ref<any>
+}
 
+const CustomBottomSheetModal = ({ bottomSheetModalRef }:ModalProps  ) => {
     const [submitting, setsubmitting] = useState(false);
     const navigation = useNavigation<Stacknavigation>();
     const [email, setEmail] = useState('testdynamo@gmail.com');
@@ -33,9 +36,9 @@ const CartModal = () => {
                     quantity: p.quantity
                 }),),
             });
-            console.log('====================================');
-            console.log(response);
-            console.log('====================================');
+            // console.log('====================================');
+            // console.log(response);
+            // console.log('====================================');
             setOrder(response)
 
             clearCart()
@@ -45,10 +48,17 @@ const CartModal = () => {
         }
 
     }
-
-
+    
+    const snapPoints = useMemo(() => ['50%', '75%'], []);
     return (
-        <View style={styles.container}>
+
+        <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints} 
+        //    onDismiss={}
+        >
+            <View style={styles.container}>
             {order && (
                 <View style={{ marginTop: '50%', padding: 20, backgroundColor: '#000', borderRadius: 8, marginBottom: 20, alignItems: 'center' }}>
                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 26 }}>Order submitted!</Text>
@@ -66,7 +76,7 @@ const CartModal = () => {
                 </View>
                 {products.length === 0 && <Text style={{ textAlign: 'center' }}>Your cart is empty</Text>}
                 <FlatList
-                    //style={{backgroundColor:'lightgreen',}}
+                    
                     data={products}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
@@ -102,8 +112,14 @@ const CartModal = () => {
 
             </SafeAreaView>)}
         </View>
+        </BottomSheetModal>
     );
 }
+
+export default CustomBottomSheetModal;
+
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -201,4 +217,3 @@ const styles = StyleSheet.create({
 
 })
 
-export default CartModal;
