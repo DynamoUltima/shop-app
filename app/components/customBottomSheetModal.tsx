@@ -1,4 +1,4 @@
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import React, {  useMemo, useState } from "react";
 import { FlatList, Image, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -42,28 +42,40 @@ const CustomBottomSheetModal = ({ bottomSheetModalRef }:ModalProps  ) => {
             setOrder(response)
 
             clearCart()
+            dismiss();
 
         } finally {
             setsubmitting(false)
         }
 
     }
+
+    const { dismiss } = useBottomSheetModal()
+    const handleDismiss = () => {
+        dismiss(); // Call the provided onDismiss function
+    };
     
-    const snapPoints = useMemo(() => ['50%', '75%'], []);
+    const snapPoints = useMemo(() => ['70%', '90%'], []);
+    const BackdropComponent = () => (
+        <TouchableOpacity style={styles.backdrop} onPress={handleDismiss}>
+          
+        </TouchableOpacity>
+    );
     return (
 
         <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
             snapPoints={snapPoints} 
-        //    onDismiss={}
+            backdropComponent={()=><BackdropComponent />} 
+            
         >
             <View style={styles.container}>
             {order && (
-                <View style={{ marginTop: '50%', padding: 20, backgroundColor: '#000', borderRadius: 8, marginBottom: 20, alignItems: 'center' }}>
+                <View style={{ marginTop: '50%', padding: 20, backgroundColor: '#000', borderRadius: 8, marginBottom: 20, marginHorizontal:20, alignItems: 'center' }}>
                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 26 }}>Order submitted!</Text>
                     <Text style={{ color: '#fff', fontSize: 16, margin: 20 }}>Order ID: {order.id}</Text>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: '#1FE687', padding: 10, borderRadius: 8 }}>
+                    <TouchableOpacity onPress={() => dismiss()} style={{ backgroundColor: '#1FE687', padding: 10, borderRadius: 8 }}>
                         <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 16 }}>Continue Shopping</Text>
                     </TouchableOpacity>
                 </View>
@@ -213,6 +225,15 @@ const styles = StyleSheet.create({
     inactive: {
         opacity: 0.5,
     },
+    backdrop: {
+        flex: 1, // Makes the backdrop cover the entire space
+        position: 'absolute', // Ensures it fills the entire viewport
+        top: 0, // Positions it at the top
+        left: 0, // Positions it at the left
+        right: 0, // Extends it to the right edge
+        bottom: 0, // Extends it to the bottom
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent backdrop
+      },
 
 
 })

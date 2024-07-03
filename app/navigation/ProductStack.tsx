@@ -4,10 +4,10 @@ import ProductDetails from "../screens/ProductDetails"
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import useCartStore from "../state/cartStore"
 import CartModal from "../screens/CartModal"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Ref, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { Ionicons } from '@expo/vector-icons';
-import { useBottomSheetModal } from "@gorhom/bottom-sheet"
+import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet"
 
 
 
@@ -26,17 +26,18 @@ export type Stacknavigation = NavigationProp<ProductStackParamList>;
 type ProductPageArgs = {
     onPress: () => void;
     visibility: boolean;
+    bottomSheetModalRef: Ref<any>
 }
 
-const ProductsStackNav = ({ onPress, visibility }: ProductPageArgs) => {
-
+const ProductsStackNav = ({ onPress, visibility ,bottomSheetModalRef}: ProductPageArgs) => {
+ 
 
     return (
         <ProductsStack.Navigator screenOptions={{
             headerStyle: { backgroundColor: "#1FE687" },
             headerTintColor: "#141414",
             headerTitleAlign: "center",
-            headerRight: () => <CartButton visibility={visibility} onPress={onPress} />
+            headerRight: () => <CartButton visibility={visibility} onPress={onPress} bottomSheetModalRef={bottomSheetModalRef} />
         }} >
 
             <ProductsStack.Screen name="Products" component={Products} options={{ headerTitle: ' Shop' }} />
@@ -46,32 +47,38 @@ const ProductsStackNav = ({ onPress, visibility }: ProductPageArgs) => {
                 component={CartModal}
                 options={{ headerShown: false, presentation: 'modal', animation: "slide_from_bottom", animationDuration: 100, }}
             />
-
-
-
         </ProductsStack.Navigator>
     )
 }
 
-const CartButton = ({ onPress, visibility }: ProductPageArgs) => {
+const CartButton = ({ onPress, visibility,bottomSheetModalRef }: ProductPageArgs) => {
+   
+    
+
+    const bottomSheetRef = useRef<BottomSheetModal | null>(null);
+    // console.log(visibility)
 
     const navigation = useNavigation<Stacknavigation>()
     const [count, setCount] = useState(0)
     const { dismiss } = useBottomSheetModal()
 
-    const { products } = useCartStore((state) => ({
-        products: state.products
+    const { products,isDarkMode,toggleDarkMode } = useCartStore((state) => ({
+        products: state.products,
+        isDarkMode: state.isDarkMode,
+        toggleDarkMode:state.toggleDarkMode
     }));
 
     useEffect(() => {
         const count = products.reduce((prev, products) => prev + products.quantity, 0)
         setCount(count)
 
-    }, [products])
+    }, [products,])
+
+    
 
     return (
 
-        <TouchableOpacity onPress={() => visibility? dismiss():  onPress()}>
+        <TouchableOpacity onPress={onPress}>
             <View style={styles.countContainer}>
                 <Text >{count}</Text>
             </View>

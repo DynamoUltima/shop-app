@@ -22,8 +22,8 @@ const Products = ({ navigation }: ProductPageProps) => {
 
     const onRefresh = async () => {
         setRefreshing(true); // Start the refreshing indicator
-        // Simulate fetching new data (replace with your actual data fetching logic)
-        const newData = await fetchProducts(); // Replace with your API call
+        
+        const newData = await fetchProducts(); 
         setProducts(newData);
         setRefreshing(false); // Stop the refreshing indicator
     };
